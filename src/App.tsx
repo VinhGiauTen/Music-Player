@@ -90,10 +90,10 @@ export default function App() {
           isOpen ? "animate-appear2 " : "basis-4/5"
         } `}
       >
-        <div className="flex justify-around items-center p-5 my-5 ">
+        <div className="flex justify-around items-center p-5 my-3 ">
           <p className={`text-[#363636] font-bold text-2xl `}>Music</p>
           <div
-            className="border-2 border-[#414141] hover:bg-[#414141] hover:text-white hover:cursor-pointer flex p-2 space-x-2 text-sm"
+            className="border-2 border-[#414141] hover:bg-[#414141] hover:text-white hover:cursor-pointer flex p-2 space-x-2 text-sm z-10"
             onClick={() => setOpen(!isOpen)}
           >
             <p>Library</p>
@@ -120,29 +120,28 @@ export default function App() {
             alt=""
             className={`rounded-full w-1/2  ${
               isPlaying ? "animate-spin-slow" : ""
-            }`}
+            } ${isOpen ? "animate-appear3" : ""}`}
           />
           <p className="text-[#363636] text-2xl font-bold pt-10">
             {activeItem.name}
           </p>
           <p className="text-[#646464] text-xl">{activeItem.artist}</p>
 
-          <div className="flex space-x-5 w-1/2 justify-center items-center">
+          <div className="flex space-x-5 xl:w-1/2 w-5/6 justify-center items-center pt-10">
             <p>{formatDuration(currentTime)}</p>
             <div className="w-3/4">
               <RangeSlider
                 color={activeItem.color[0]}
                 color1={activeItem.color[1]}
-                max={duration}
-                value={currentTime}
+                max={duration || 100}
+                value={currentTime || 0}
                 handleChange={handleSeek}
               />
             </div>
             <audio src={activeItem.audio} ref={audioRef} />
             <p>{formatDuration(duration)}</p>
           </div>
-
-          <div className="flex justify-around cursor-pointer transition p-3 w-1/2">
+          <div className="flex justify-around cursor-pointer transition p-3 xl:w-1/2 w-4/5">
             <div
               className="flex justify-center items-center w-20 h-20"
               onClick={handlePrevious}
@@ -176,10 +175,10 @@ export default function App() {
       <div
         className={`${
           isOpen ? "animate-appear" : "animate-disappear -translate-x-full"
-        } xl:w-1/5 shadow-2xl pr-3 h-screen
+        } xl:w-1/5 shadow-2xl pr-3 h-screen absolute top-0 bg-white
         `}
       >
-        <p className="text-[#363636] font-bold text-2xl p-5 ">Library</p>
+        <p className="text-[#363636] font-bold text-2xl p-5 mt-5 ">Library</p>
         {data.map((d) => (
           <div
             key={d.name}
