@@ -21,6 +21,7 @@ export default {
         appear: "appear 1s ease-out",
         appear2: "appear2 0.5s ease-out",
         disappear: "disappear 2s ease-in-out",
+        "spin-slow": "spin 25s linear infinite",
       },
     },
   },

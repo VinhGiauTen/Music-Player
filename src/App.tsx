@@ -3,6 +3,7 @@ import { data } from "./data";
 import play from "./assets/right-arrow-svgrepo-com (1).svg";
 import pause from "./assets/pause-solid.svg";
 import arrow from "./assets/right-arrow-angle-svgrepo-com.svg";
+import { RangeSlider } from "./RangeSlider";
 
 type Music = {
   name: string;
@@ -21,15 +22,27 @@ export default function App() {
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Hàm chuyển sang bài hát tiếp theo
+  const handleNext = () => {
+    const currentIndex = data.findIndex((item) => item.id === activeItem.id);
+    const nextIndex = (currentIndex + 1) % data.length;
+    setActiveItem(data[nextIndex]);
+  };
+
+  // Hàm chuyển sang bài hát trước đó
+  const handlePrevious = () => {
+    const currentIndex = data.findIndex((item) => item.id === activeItem.id);
+    const previousIndex = (currentIndex - 1 + data.length) % data.length;
+    setActiveItem(data[previousIndex]);
+  };
+
   const handlePlayPause = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
       } else {
-        audioRef.current.play().catch((error) => {
-          console.error("Error playing audio:", error);
-        });
+        audioRef.current.play();
         setIsPlaying(true);
       }
     }
@@ -65,28 +78,16 @@ export default function App() {
     }
   }, []);
 
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.src = activeItem.audio;
-      if (isPlaying) {
-        audioRef.current.play().catch((error) => {
-          console.error("Error playing audio:", error);
-        });
-      }
-    }
-  }, [activeItem, isPlaying]);
   // Hàm xử lý khi click vào một item
   const handleItemClick = (item: Music) => {
     setActiveItem(item);
   };
 
   return (
-    <div className={`${isOpen ? "xl:flex items-start" : ""}`}>
+    <div className={`xl:flex items-start ${isOpen ? "" : ""}`}>
       <div
-        className={`flex flex-col xl:basis-1/2 ${
-          isOpen
-            ? "animate-appear2 translate-x-1/4 order-2"
-            : "animate-disappear"
+        className={`flex flex-col xl:basis-1/2 order-2 ${
+          isOpen ? "animate-appear2 " : "basis-4/5"
         } `}
       >
         <div className="flex justify-around items-center p-5 my-5 ">
@@ -114,28 +115,38 @@ export default function App() {
           </div>
         </div>
         <div className="flex flex-col items-center space-y-3">
-          <img src={activeItem.cover} alt="" className="rounded-full" />
+          <img
+            src={activeItem.cover}
+            alt=""
+            className={`rounded-full w-1/2  ${
+              isPlaying ? "animate-spin-slow" : ""
+            }`}
+          />
           <p className="text-[#363636] text-2xl font-bold pt-10">
             {activeItem.name}
           </p>
           <p className="text-[#646464] text-xl">{activeItem.artist}</p>
 
-          <div className="flex space-x-5 w-1/2 justify-center">
+          <div className="flex space-x-5 w-1/2 justify-center items-center">
             <p>{formatDuration(currentTime)}</p>
-            <input
-              type="range"
-              min="0"
-              max={duration}
-              value={currentTime}
-              onChange={handleSeek}
-              className={`w-3/4 bg-gradient-to-r from-[${activeItem.color[0]}] to-[${activeItem.color[1]}]`}
-            />
+            <div className="w-3/4">
+              <RangeSlider
+                color={activeItem.color[0]}
+                color1={activeItem.color[1]}
+                max={duration}
+                value={currentTime}
+                handleChange={handleSeek}
+              />
+            </div>
             <audio src={activeItem.audio} ref={audioRef} />
             <p>{formatDuration(duration)}</p>
           </div>
 
           <div className="flex justify-around cursor-pointer transition p-3 w-1/2">
-            <div className="flex justify-center items-center w-20 h-20">
+            <div
+              className="flex justify-center items-center w-20 h-20"
+              onClick={handlePrevious}
+            >
               <img
                 src={arrow}
                 className="rotate-180 w-8 hover:w-10 transition-all duration-300"
@@ -150,7 +161,10 @@ export default function App() {
                 className="w-8 hover:w-10 transition-all duration-300"
               />
             </div>
-            <div className="flex justify-center items-center w-20 h-20">
+            <div
+              className="flex justify-center items-center w-20 h-20"
+              onClick={handleNext}
+            >
               <img
                 src={arrow}
                 className="w-8 hover:w-10 transition-all duration-300"
