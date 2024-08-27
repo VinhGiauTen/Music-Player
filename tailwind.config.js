@@ -5,17 +5,16 @@ export default {
     extend: {
       keyframes: {
         appear: {
-          "0%": { transform: "translateX(-200px)" },
+          "0%": { transform: "translateX(-400px)" },
           "100%": { transform: "translateX(0)" },
         },
         appear2: {
           "0%": { transform: "translateX(0px)" },
-          "100%": { transform: "translateX(200px)" },
+          "100%": { transform: "translateX(50px)" },
         },
         disappear: {
           "0%": { transform: "translateX(0)" },
-          "50%": { transform: "translateX(-100px)" },
-          "100%": { transform: "translateX(-200px)" },
+          "100%": { transform: "translateX(-400px)" },
         },
       },
       animation: {
