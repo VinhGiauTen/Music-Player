@@ -24,16 +24,20 @@ export default function App() {
 
   // Hàm chuyển sang bài hát tiếp theo
   const handleNext = () => {
-    const currentIndex = data.findIndex((item) => item.id === activeItem.id);
-    const nextIndex = (currentIndex + 1) % data.length;
-    setActiveItem(data[nextIndex]);
+    const currentIndex = data.findIndex(
+      (item) => item.name === activeItem.name
+    );
+    if (currentIndex < data.length - 1) setActiveItem(data[currentIndex + 1]);
+    else setActiveItem(data[0]);
   };
 
   // Hàm chuyển sang bài hát trước đó
   const handlePrevious = () => {
-    const currentIndex = data.findIndex((item) => item.id === activeItem.id);
-    const previousIndex = (currentIndex - 1 + data.length) % data.length;
-    setActiveItem(data[previousIndex]);
+    const currentIndex = data.findIndex(
+      (item) => item.name === activeItem.name
+    );
+    if (currentIndex > 0) setActiveItem(data[currentIndex - 1]);
+    else setActiveItem(data[data.length - 1]);
   };
 
   const handlePlayPause = () => {
@@ -81,17 +85,32 @@ export default function App() {
   // Hàm xử lý khi click vào một item
   const handleItemClick = (item: Music) => {
     setActiveItem(item);
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.play();
+        setIsPlaying(true);
+      } else {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
   };
 
   return (
     <div className={`xl:flex items-start ${isOpen ? "" : ""}`}>
       <div
-        className={`flex flex-col xl:basis-1/2 order-2 ${
-          isOpen ? "animate-appear2 " : "basis-4/5"
-        } `}
+        className={`nav flex flex-col xl:basis-full order-2 ${
+          isOpen ? "xl:animate-appearXL xl:ml-72" : "xl:animate-disappearXL"
+        }`}
       >
-        <div className="flex justify-around items-center p-5 my-3 ">
-          <p className={`text-[#363636] font-bold text-2xl `}>Music</p>
+        <div className="content flex justify-around items-center p-5 my-3 ">
+          <p
+            className={`text-[#363636] font-bold text-2xl ${
+              isOpen ? "animate-appear2 " : "animate-disappear2"
+            } xl:animate-none`}
+          >
+            Music
+          </p>
           <div
             className="border-2 border-[#414141] hover:bg-[#414141] hover:text-white hover:cursor-pointer flex p-2 space-x-2 text-sm z-10"
             onClick={() => setOpen(!isOpen)}
@@ -114,19 +133,32 @@ export default function App() {
             </svg>
           </div>
         </div>
-        <div className="flex flex-col items-center space-y-3">
+        <div className="song-controller flex flex-col items-center space-y-3">
           <img
             src={activeItem.cover}
             alt=""
-            className={`rounded-full w-1/2  ${
-              isPlaying ? "animate-spin-slow" : ""
-            } ${isOpen ? "animate-appear3" : ""}`}
+            className={`rounded-full w-1/2 xl:w-1/5 mt-10  ${
+              isOpen
+                ? "animate-appear3 xl:animate-none"
+                : "animate-disappear3 xl:animate-none"
+            } ${isPlaying ? "animate-spin-slow xl:animate-spin-slow" : ""}`}
           />
-          <p className="text-[#363636] text-2xl font-bold pt-10">
-            {activeItem.name}
-          </p>
-          <p className="text-[#646464] text-xl">{activeItem.artist}</p>
-
+          <div
+            className={`flex flex-col items-center space-y-3 ${
+              isOpen ? "animate-appear4" : "animate-disappear4"
+            } xl:animate-none`}
+          >
+            <p className="text-[#363636] text-2xl font-bold pt-10">
+              {activeItem.name}
+            </p>
+            <p className="text-[#646464] text-xl">{activeItem.artist}</p>
+          </div>
+        </div>
+        <div
+          className={`flex flex-col items-center mt-10 space-y-10 ${
+            isOpen ? "animate-appear4" : "animate-disappear4"
+          } xl:animate-none`}
+        >
           <div className="flex space-x-5 xl:w-1/2 w-5/6 justify-center items-center pt-10">
             <p>{formatDuration(currentTime)}</p>
             <div className="w-3/4">
@@ -173,9 +205,9 @@ export default function App() {
         </div>
       </div>
       <div
-        className={`${
+        className={`sidebar ${
           isOpen ? "animate-appear" : "animate-disappear -translate-x-full"
-        } xl:w-1/5 shadow-2xl pr-3 h-screen absolute top-0 bg-white
+        } xl:w-1/5 shadow-2xl pr-3 min-h-dvh absolute top-0 bg-white
         `}
       >
         <p className="text-[#363636] font-bold text-2xl p-5 mt-5 ">Library</p>
