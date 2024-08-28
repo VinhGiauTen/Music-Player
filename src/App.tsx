@@ -4,6 +4,15 @@ import play from "./assets/right-arrow-svgrepo-com (1).svg";
 import pause from "./assets/pause-solid.svg";
 import arrow from "./assets/right-arrow-angle-svgrepo-com.svg";
 import { RangeSlider } from "./RangeSlider";
+import volume_high from "./assets/volume-high-solid.svg";
+import volume_off from "./assets/volume-xmark-solid.svg";
+import volume_low from "./assets/volume-low-solid.svg";
+import volume_high_white from "./assets/volume-high-solid-white.svg";
+import volume_off_white from "./assets/volume-xmark-solid-white.svg";
+import volume_low_white from "./assets/volume-low-solid-white.svg";
+import repeat from "./assets/repeat-solid.svg";
+import repeat_one from "./assets/9021633_repeat_once_bold_icon.svg";
+import shuffle from "./assets/shuffle-solid.svg";
 
 type Music = {
   name: string;
@@ -21,6 +30,9 @@ export default function App() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [volume, setVolume] = useState(50);
+  const [showVolume, setShowVolume] = useState(false);
+  const [isRepeat, setRepeat] = useState("repeat");
 
   // Hàm chuyển sang bài hát tiếp theo
   const handleNext = () => {
@@ -104,6 +116,12 @@ export default function App() {
     }
   }, [activeItem]);
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume / 100;
+    }
+  }, [volume]);
+
   // Hàm xử lý khi click vào một item
   const handleItemClick = (item: Music) => {
     setActiveItem(item);
@@ -117,6 +135,75 @@ export default function App() {
       }
     }
   };
+
+  const handleRepeat = () => {
+    setRepeat((value) => {
+      switch (value) {
+        case "repeat":
+          return "repeat_one";
+        case "repeat_one":
+          return "shuffle";
+        default:
+          return "repeat";
+      }
+    });
+  };
+
+  const getRepeatIcon = () => {
+    switch (isRepeat) {
+      case "repeat":
+        return repeat;
+      case "repeat_one":
+        return repeat_one;
+      case "shuffle":
+        return shuffle;
+      default:
+        return repeat;
+    }
+  };
+
+  const EndedAudio = () => {
+    if (audioRef.current) {
+      switch (isRepeat) {
+        case "repeat":
+          return handleNext();
+        case "repeat_one":
+          return audioRef.current.play();
+        case "shuffle":
+          return handleShuffle();
+        default:
+          return handleNext();
+      }
+    }
+  };
+
+  const handleShuffle = () => {
+    const num = randomNumber();
+    setActiveItem(data[num]);
+  };
+
+  const randomNumber = () => {
+    const random = Math.floor(Math.random() * data.length - 1);
+    if (random === data.findIndex((item) => item.name === activeItem.name)) {
+      return randomNumber();
+    }
+    return random;
+  };
+
+  const controls = [
+    { src: getRepeatIcon(), className: "", onClick: handleRepeat },
+    {
+      src: arrow,
+      className: "rotate-180  hover:w-10",
+      onClick: handlePrevious,
+    },
+    {
+      src: isPlaying ? pause : play,
+      className: " hover:w-10",
+      onClick: handlePlayPause,
+    },
+    { src: arrow, className: " hover:w-10", onClick: handleNext },
+  ];
 
   return (
     <div className={`xl:flex items-start overflow-hidden ${isOpen ? "" : ""}`}>
@@ -161,11 +248,13 @@ export default function App() {
           <img
             src={activeItem.cover}
             alt=""
-            className={`rounded-full w-1/2 xl:w-1/5 mt-10  ${
+            className={`rounded-full w-1/2 lg:w-1/3 xl:w-1/5 mt-5 xl:mt-10  ${
               isOpen
                 ? "animate-appear3 xl:animate-none"
                 : "animate-disappear3 xl:animate-none"
-            } ${isPlaying ? "animate-spin-slow xl:animate-spin-slow" : ""}`}
+            } animate-spin-slow xl:animate-spin-slow ${
+              isPlaying ? "" : "animation-paused xl:animation-paused"
+            }`}
           />
           <div
             className={`flex flex-col items-center space-y-3 ${
@@ -179,7 +268,7 @@ export default function App() {
           </div>
         </div>
         <div
-          className={`flex flex-col items-center mt-10 space-y-10 ${
+          className={`flex flex-col items-center mt-5 xl:mt-10 space-y-10 ${
             isOpen ? "animate-appear4" : "animate-disappear4"
           } xl:animate-none`}
         >
@@ -194,37 +283,65 @@ export default function App() {
                 handleChange={handleSeek}
               />
             </div>
-            <audio src={activeItem.audio} ref={audioRef} onEnded={handleNext} />
+            <audio src={activeItem.audio} ref={audioRef} onEnded={EndedAudio} />
             <p>{formatDuration(duration)}</p>
           </div>
-          <div className="flex justify-around cursor-pointer transition p-3 xl:w-1/2 w-4/5">
+          <div className="flex justify-around cursor-pointer transition p-3 xl:w-1/2 ">
+            {controls.map((control, index) => (
+              <div
+                key={index}
+                className="flex justify-center items-center w-20 h-20"
+                onClick={control.onClick}
+              >
+                <img
+                  src={control.src}
+                  className={`w-8 transition-all duration-300 ${control.className}`}
+                />
+              </div>
+            ))}
             <div
               className="flex justify-center items-center w-20 h-20"
-              onClick={handlePrevious}
+              onClick={() => setShowVolume(!showVolume)}
             >
               <img
-                src={arrow}
-                className="rotate-180 w-8 hover:w-10 transition-all duration-300"
+                src={
+                  volume == 0
+                    ? volume_off
+                    : volume <= 50
+                    ? volume_low
+                    : volume_high
+                }
+                className={`w-8 hover:w-10 transition-all duration-300 `}
               />
             </div>
-            <div
-              className="flex justify-center items-center w-20 h-20"
-              onClick={handlePlayPause}
-            >
-              <img
-                src={isPlaying ? pause : play}
-                className="w-8 hover:w-10 transition-all duration-300"
-              />
-            </div>
-            <div
-              className="flex justify-center items-center w-20 h-20"
-              onClick={handleNext}
-            >
-              <img
-                src={arrow}
-                className="w-8 hover:w-10 transition-all duration-300"
-              />
-            </div>
+          </div>
+          <div
+            className={`bg-slate-800 p-2 rounded-full flex justify-around items-center space-x-2 w-2/3 md:w-1/3 xl:w-1/5 -translate-y-10 ${
+              showVolume ? "" : "hidden"
+            }`}
+            onClick={() => setVolume((v) => (v > 0 ? 0 : 100))}
+          >
+            <img
+              src={
+                volume == 0
+                  ? volume_off_white
+                  : volume <= 50
+                  ? volume_low_white
+                  : volume_high_white
+              }
+              className={`w-8 transition-all duration-300 `}
+            />
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={volume}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setVolume(Number(e.target.value))
+              }
+              className="md:w-2/3"
+            />
+            <p className="text-white font-semibold text-xl">{volume}</p>
           </div>
         </div>
       </div>

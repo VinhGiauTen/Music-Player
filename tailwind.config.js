@@ -103,7 +103,7 @@ export default {
         disappear2: "appear2Reverse 0.5s ease-out ",
         disappear3: "appear3Reverse 0.5s ease-out ",
         disappear: "disappear 1s ease-in-out",
-        "spin-slow": "spin 25s linear infinite",
+        // "spin-slow": "spin 25s linear infinite",
       },
     },
   },
