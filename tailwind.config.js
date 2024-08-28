@@ -42,21 +42,13 @@ export default {
         },
 
         appearXL: {
-          "0%": {
-            marginLeft: "0px",
-          },
-          "100%": {
-            marginLeft: "18rem",
-          },
+          "0%": { transform: "translateX(0px)" },
+          "100%": { transform: "translateX(192px)" },
         },
 
         disappearXL: {
-          "0%": {
-            marginLeft: "18rem",
-          },
-          "100%": {
-            marginLeft: "0px",
-          },
+          "0%": { transform: "translateX(192px)" },
+          "100%": { transform: "translateX(0px)" },
         },
 
         disappear: {

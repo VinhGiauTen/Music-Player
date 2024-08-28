@@ -119,10 +119,12 @@ export default function App() {
   };
 
   return (
-    <div className={`xl:flex items-start ${isOpen ? "" : ""}`}>
+    <div className={`xl:flex items-start overflow-hidden ${isOpen ? "" : ""}`}>
       <div
         className={`nav flex flex-col xl:basis-full order-2 ${
-          isOpen ? "xl:animate-appearXL xl:ml-72" : "xl:animate-disappearXL"
+          isOpen
+            ? "xl:animate-appearXL xl:translate-x-48"
+            : "xl:animate-disappearXL"
         }`}
       >
         <div className="content flex justify-around items-center p-5 my-3 ">

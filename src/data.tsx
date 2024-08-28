@@ -53,5 +53,15 @@ export const data = [
     color: ["#205950", "#2ab3bf"],
     id: "uuidv4()",
   },
+  {
+    name: "Dark SoulS III: The Ringed City",
+    cover:
+      "https://steamuserimages-a.akamaihd.net/ugc/1302053624129022292/547A97A72B1BC1C278CB551F7A111624BBD76B1E/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false",
+    artist: "Dark Soul",
+    audio:
+      "https://vgmsite.com/soundtracks/dark-souls-iii-the-ringed-city-extended-soundtrack/qyofrigv/04%20-%20Slave%20Knight%20Gael%20%28Extended%29.mp3",
+    color: ["#205950", "#2ab3bf"],
+    id: "uuidv4()",
+  },
   //ADD MORE HERE
 ];

@@ -16,12 +16,20 @@
   cursor: pointer;
 }
 
-.img {
-  animation: rotate 20s linear;
-  animation-iteration-count: infinite;
-  animation-play-state: paused;
+.animate-spin-slow {
+  animation: spin 25s linear infinite;
+  animation-play-state: running; /* Animation đang chạy */
 }
 
-.img.playing {
-  animation-play-state: running;
+.animation-paused {
+  animation-play-state: paused; /* Animation tạm dừng */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
