@@ -55,6 +55,11 @@ export default function App() {
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
       setDuration(audioRef.current.duration);
     }
   };
@@ -76,11 +81,28 @@ export default function App() {
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
+      audioRef.current.addEventListener("loadedmetadata", handleLoadedMetadata);
+
       return () => {
         audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
+        audioRef.current?.removeEventListener(
+          "loadedmetadata",
+          handleLoadedMetadata
+        );
       };
     }
   }, []);
+
+  // Cập nhật khi activeItem thay đổi
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.load();
+      if (isPlaying) {
+        audioRef.current.play();
+      }
+    }
+  }, [activeItem]);
 
   // Hàm xử lý khi click vào một item
   const handleItemClick = (item: Music) => {
@@ -170,7 +192,7 @@ export default function App() {
                 handleChange={handleSeek}
               />
             </div>
-            <audio src={activeItem.audio} ref={audioRef} />
+            <audio src={activeItem.audio} ref={audioRef} onEnded={handleNext} />
             <p>{formatDuration(duration)}</p>
           </div>
           <div className="flex justify-around cursor-pointer transition p-3 xl:w-1/2 w-4/5">
