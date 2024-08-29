@@ -246,7 +246,7 @@ export default function App() {
 
   return (
     <div
-      className={`xl:flex items-start overflow-hidden h-lvh max-h-screen dark:bg-slate-900 dark:text-gray-100 duration-100`}
+      className={`xl:flex items-start overflow-hidden min-h-screen max-h-full dark:bg-slate-900 dark:text-gray-100 duration-100`}
     >
       <div
         className={`nav flex flex-col xl:basis-full order-2 ${
@@ -292,7 +292,7 @@ export default function App() {
               ))}
             </div>
             <div
-              className="border-2 border-[#414141] hover:bg-[#414141] dark:border-gray-100 hover:text-white hover:cursor-pointer rounded-lg flex p-2 space-x-2 text-sm z-10"
+              className="border-2 border-[#414141] hover:bg-[#414141] dark:border-gray-100 hover:text-white hover:cursor-pointer rounded-lg flex p-2 space-x-2 text-sm z-30"
               onClick={() => setOpen(!isOpen)}
             >
               <p>Library</p>
@@ -372,11 +372,11 @@ export default function App() {
             <audio src={activeItem.audio} ref={audioRef} onEnded={EndedAudio} />
             <p>{formatDuration(duration)}</p>
           </div>
-          <div className="flex justify-around cursor-pointer transition p-3 xl:w-1/2 dark:invert ">
+          <div className="flex justify-around cursor-pointer transition p-3 md:w-1/2 ">
             {controls.map((control, index) => (
               <div
                 key={index}
-                className="flex justify-center items-center w-20 h-20"
+                className="flex justify-center dark:invert items-center w-20 h-20 "
                 onClick={control.onClick}
               >
                 <img
@@ -385,10 +385,7 @@ export default function App() {
                 />
               </div>
             ))}
-            <div
-              className="flex justify-center items-center w-20 h-20"
-              onClick={() => setShowVolume(!showVolume)}
-            >
+            <div className="flex justify-center items-center w-20 h-20 ">
               <img
                 src={
                   volume == 0
@@ -397,12 +394,34 @@ export default function App() {
                     ? volume_low
                     : volume_high
                 }
-                className={`w-8 hover:w-10 transition-all duration-300 `}
+                onClick={() => setShowVolume(!showVolume)}
+                className={`w-8 transition-all duration-300 dark:invert z-10`}
               />
+              <div
+                className={` bg-slate-700 p-2 rounded-full flex -rotate-90 md:rotate-0 justify-around items-center space-x-2 
+                  w-60 md:w-56 absolute -translate-y-24 md:translate-y-0 md:translate-x-20 transition-opacity duration-300 ${
+                    showVolume ? "opacity-100" : "opacity-0 pointer-events-none"
+                  }`}
+              >
+                <div className="md:w-10 w-8"></div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setVolume(Number(e.target.value));
+                  }}
+                  className="md:w-2/3"
+                />
+                <p className="text-white font-semibold text-xl rotate-90 md:rotate-0 w-8 text-center">
+                  {volume}
+                </p>
+              </div>
             </div>
           </div>
-          <div
-            className={`bg-slate-800 p-2 rounded-full flex justify-around items-center space-x-2 w-2/3 md:w-1/3 xl:w-1/5 -translate-y-10 ${
+          {/* <div
+            className={`bg-slate-800 p-2 rounded-full flex -rotate-90 justify-around items-center space-x-2 w-2/3 md:w-1/3 xl:w-1/5 fixed${
               showVolume ? "" : "hidden"
             }`}
           >
@@ -424,12 +443,11 @@ export default function App() {
               value={volume}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setVolume(Number(e.target.value));
-                if (audioRef.current) audioRef.current.volume = volume;
               }}
               className="md:w-2/3"
             />
             <p className="text-white font-semibold text-xl">{volume}</p>
-          </div>
+          </div> */}
         </div>
       </div>
       <div
@@ -439,7 +457,7 @@ export default function App() {
             : isOpen
             ? "animate-appear"
             : "animate-disappear -translate-x-full"
-        } xl:w-1/5 shadow-2xl pr-3 min-h-dvh absolute top-0 bg-white dark:bg-slate-800 
+        } xl:w-1/5 shadow-2xl pr-3 min-h-dvh absolute top-0 bg-white dark:bg-slate-800 overflow-hidden z-10
         `}
       >
         <p className="text-[#363636] dark:text-gray-100 font-bold text-2xl p-5 mt-5 ">
