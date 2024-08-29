@@ -16,9 +16,8 @@
   cursor: pointer;
 }
 
-.animate-spin-slow {
+.animation-spin-slow {
   animation: spin 25s linear infinite;
-  animation-play-state: running; /* Animation đang chạy */
 }
 
 .animation-paused {

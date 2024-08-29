@@ -183,7 +183,7 @@ export default function App() {
   };
 
   const randomNumber = () => {
-    const random = Math.floor(Math.random() * data.length - 1);
+    const random = Math.floor(Math.random() * data.length);
     if (random === data.findIndex((item) => item.name === activeItem.name)) {
       return randomNumber();
     }
@@ -206,7 +206,11 @@ export default function App() {
   ];
 
   return (
-    <div className={`xl:flex items-start overflow-hidden ${isOpen ? "" : ""}`}>
+    <div
+      className={`xl:flex items-start overflow-hidden h-lvh ${
+        isOpen ? "" : ""
+      }`}
+    >
       <div
         className={`nav flex flex-col xl:basis-full order-2 ${
           isOpen
@@ -245,17 +249,19 @@ export default function App() {
           </div>
         </div>
         <div className="song-controller flex flex-col items-center space-y-3">
-          <img
-            src={activeItem.cover}
-            alt=""
-            className={`rounded-full w-1/2 lg:w-1/3 xl:w-1/5 mt-5 xl:mt-10  ${
-              isOpen
-                ? "animate-appear3 xl:animate-none"
-                : "animate-disappear3 xl:animate-none"
-            } animate-spin-slow xl:animate-spin-slow ${
-              isPlaying ? "" : "animation-paused xl:animation-paused"
-            }`}
-          />
+          <div
+            className={` w-1/2 lg:w-1/3 xl:w-1/5 mt-5 xl:mt-10  ${
+              isOpen ? "animate-appear3" : "animate-disappear3"
+            } xl:animate-none`}
+          >
+            <img
+              src={activeItem.cover}
+              alt=""
+              className={`rounded-full animation-spin-slow ${
+                isPlaying ? "" : "animation-paused"
+              }`}
+            />
+          </div>
           <div
             className={`flex flex-col items-center space-y-3 ${
               isOpen ? "animate-appear4" : "animate-disappear4"
@@ -268,7 +274,7 @@ export default function App() {
           </div>
         </div>
         <div
-          className={`flex flex-col items-center mt-5 xl:mt-10 space-y-10 ${
+          className={`flex flex-col items-center mt-5 xl:mt-7 space-y-10 ${
             isOpen ? "animate-appear4" : "animate-disappear4"
           } xl:animate-none`}
         >
@@ -336,9 +342,10 @@ export default function App() {
               min="0"
               max="100"
               value={volume}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setVolume(Number(e.target.value))
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setVolume(Number(e.target.value));
+                if (audioRef.current) audioRef.current.volume = volume;
+              }}
               className="md:w-2/3"
             />
             <p className="text-white font-semibold text-xl">{volume}</p>
