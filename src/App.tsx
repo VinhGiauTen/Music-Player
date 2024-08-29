@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { data } from "./data";
+import { data, options } from "./data";
 import play from "./assets/right-arrow-svgrepo-com (1).svg";
 import pause from "./assets/pause-solid.svg";
 import arrow from "./assets/right-arrow-angle-svgrepo-com.svg";
@@ -7,9 +7,6 @@ import { RangeSlider } from "./RangeSlider";
 import volume_high from "./assets/volume-high-solid.svg";
 import volume_off from "./assets/volume-xmark-solid.svg";
 import volume_low from "./assets/volume-low-solid.svg";
-import volume_high_white from "./assets/volume-high-solid-white.svg";
-import volume_off_white from "./assets/volume-xmark-solid-white.svg";
-import volume_low_white from "./assets/volume-low-solid-white.svg";
 import repeat from "./assets/repeat-solid.svg";
 import repeat_one from "./assets/9021633_repeat_once_bold_icon.svg";
 import shuffle from "./assets/shuffle-solid.svg";
@@ -24,7 +21,7 @@ type Music = {
 };
 
 export default function App() {
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState<boolean | null>(null);
   const [activeItem, setActiveItem] = useState<Music>(data[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -33,6 +30,10 @@ export default function App() {
   const [volume, setVolume] = useState(50);
   const [showVolume, setShowVolume] = useState(false);
   const [isRepeat, setRepeat] = useState("repeat");
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") ? localStorage.getItem("theme") : "system"
+  );
+  const darkQuery = window.matchMedia("(prefers-color-scheme: dark");
 
   // Hàm chuyển sang bài hát tiếp theo
   const handleNext = () => {
@@ -122,6 +123,23 @@ export default function App() {
     }
   }, [volume]);
 
+  useEffect(() => {
+    switch (theme) {
+      case "dark":
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+        break;
+      case "light":
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+        break;
+      default:
+        localStorage.removeItem("theme");
+        onWindowMatch();
+        break;
+    }
+  }, [theme]);
+
   // Hàm xử lý khi click vào một item
   const handleItemClick = (item: Music) => {
     setActiveItem(item);
@@ -205,53 +223,105 @@ export default function App() {
     { src: arrow, className: " hover:w-10", onClick: handleNext },
   ];
 
+  const onWindowMatch = () => {
+    if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) && darkQuery.matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
+
+  darkQuery.addEventListener("change", (e) => {
+    if (!("theme" in localStorage)) {
+      if (e.matches) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }
+  });
+
   return (
     <div
-      className={`xl:flex items-start overflow-hidden h-lvh max-h-screen ${
-        isOpen ? "" : ""
-      }`}
+      className={`xl:flex items-start overflow-hidden h-lvh max-h-screen dark:bg-slate-900 dark:text-gray-100 duration-100`}
     >
       <div
         className={`nav flex flex-col xl:basis-full order-2 ${
-          isOpen
+          isOpen === null
+            ? ""
+            : isOpen
             ? "xl:animate-appearXL xl:translate-x-48"
             : "xl:animate-disappearXL"
         }`}
       >
         <div className="content flex justify-around items-center p-5 my-3 ">
           <p
-            className={`text-[#363636] font-bold text-2xl ${
-              isOpen ? "animate-appear2 " : "animate-disappear2"
+            className={`text-[#363636] dark:text-gray-100 font-bold text-2xl ${
+              isOpen === null
+                ? ""
+                : isOpen
+                ? "animate-appear2 "
+                : "animate-disappear2"
             } xl:animate-none`}
           >
             Music
           </p>
-          <div
-            className="border-2 border-[#414141] hover:bg-[#414141] hover:text-white hover:cursor-pointer flex p-2 space-x-2 text-sm z-10"
-            onClick={() => setOpen(!isOpen)}
-          >
-            <p>Library</p>
-            <svg
-              aria-hidden="true"
-              focusable="false"
-              data-prefix="fas"
-              data-icon="music"
-              className="svg-inline--fa fa-music fa-w-16 w-5"
-              role="img"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
+          <div className="flex space-x-3">
+            <div
+              className={`flex space-x-3 bg-gray-100 p-2 rounded-lg dark:bg-slate-800 ${
+                isOpen === null
+                  ? ""
+                  : isOpen
+                  ? "animate-appear2 "
+                  : "animate-disappear2"
+              } xl:animate-none`}
             >
-              <path
-                fill="currentColor"
-                d="M470.38 1.51L150.41 96A32 32 0 0 0 128 126.51v261.41A139 139 0 0 0 96 384c-53 0-96 28.66-96 64s43 64 96 64 96-28.66 96-64V214.32l256-75v184.61a138.4 138.4 0 0 0-32-3.93c-53 0-96 28.66-96 64s43 64 96 64 96-28.65 96-64V32a32 32 0 0 0-41.62-30.49z"
-              ></path>
-            </svg>
+              {options.map((opt) => (
+                <button
+                  key={opt.text}
+                  onClick={() => setTheme(opt.text)}
+                  className={`text-2xl grid place-content-center ${
+                    theme === opt.text && "text-sky-600"
+                  }`}
+                >
+                  <ion-icon name={opt.icon}></ion-icon>
+                </button>
+              ))}
+            </div>
+            <div
+              className="border-2 border-[#414141] hover:bg-[#414141] dark:border-gray-100 hover:text-white hover:cursor-pointer rounded-lg flex p-2 space-x-2 text-sm z-10"
+              onClick={() => setOpen(!isOpen)}
+            >
+              <p>Library</p>
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                data-prefix="fas"
+                data-icon="music"
+                className="svg-inline--fa fa-music fa-w-16 w-5"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  fill="currentColor"
+                  d="M470.38 1.51L150.41 96A32 32 0 0 0 128 126.51v261.41A139 139 0 0 0 96 384c-53 0-96 28.66-96 64s43 64 96 64 96-28.66 96-64V214.32l256-75v184.61a138.4 138.4 0 0 0-32-3.93c-53 0-96 28.66-96 64s43 64 96 64 96-28.65 96-64V32a32 32 0 0 0-41.62-30.49z"
+                ></path>
+              </svg>
+            </div>
           </div>
         </div>
         <div className="song-controller flex flex-col items-center space-y-3">
           <div
             className={` w-1/2 lg:w-1/3 xl:w-1/5 mt-5 xl:mt-10  ${
-              isOpen ? "animate-appear3" : "animate-disappear3"
+              isOpen === null
+                ? ""
+                : isOpen
+                ? "animate-appear3"
+                : "animate-disappear3"
             } xl:animate-none`}
           >
             <img
@@ -264,18 +334,28 @@ export default function App() {
           </div>
           <div
             className={`flex flex-col items-center space-y-3 ${
-              isOpen ? "animate-appear4" : "animate-disappear4"
+              isOpen === null
+                ? ""
+                : isOpen
+                ? "animate-appear4"
+                : "animate-disappear4"
             } xl:animate-none`}
           >
-            <p className="text-[#363636] text-2xl font-bold pt-10">
+            <p className="text-[#363636] dark:dark:text-gray-100 text-2xl font-bold pt-10">
               {activeItem.name}
             </p>
-            <p className="text-[#646464] text-xl">{activeItem.artist}</p>
+            <p className="text-[#646464] dark:dark:text-gray-100 text-xl">
+              {activeItem.artist}
+            </p>
           </div>
         </div>
         <div
           className={`flex flex-col items-center mt-5 xl:mt-7 space-y-10 ${
-            isOpen ? "animate-appear4" : "animate-disappear4"
+            isOpen === null
+              ? ""
+              : isOpen
+              ? "animate-appear4"
+              : "animate-disappear4"
           } xl:animate-none`}
         >
           <div className="flex space-x-5 xl:w-1/2 w-5/6 justify-center items-center pt-10">
@@ -292,7 +372,7 @@ export default function App() {
             <audio src={activeItem.audio} ref={audioRef} onEnded={EndedAudio} />
             <p>{formatDuration(duration)}</p>
           </div>
-          <div className="flex justify-around cursor-pointer transition p-3 xl:w-1/2 ">
+          <div className="flex justify-around cursor-pointer transition p-3 xl:w-1/2 dark:invert ">
             {controls.map((control, index) => (
               <div
                 key={index}
@@ -325,17 +405,17 @@ export default function App() {
             className={`bg-slate-800 p-2 rounded-full flex justify-around items-center space-x-2 w-2/3 md:w-1/3 xl:w-1/5 -translate-y-10 ${
               showVolume ? "" : "hidden"
             }`}
-            onClick={() => setVolume((v) => (v > 0 ? 0 : 100))}
           >
             <img
               src={
                 volume == 0
-                  ? volume_off_white
+                  ? volume_off
                   : volume <= 50
-                  ? volume_low_white
-                  : volume_high_white
+                  ? volume_low
+                  : volume_high
               }
-              className={`w-8 transition-all duration-300 `}
+              onClick={() => setVolume((v) => (v > 0 ? 0 : 100))}
+              className={`w-8 transition-all duration-300 invert`}
             />
             <input
               type="range"
@@ -354,15 +434,21 @@ export default function App() {
       </div>
       <div
         className={`sidebar ${
-          isOpen ? "animate-appear" : "animate-disappear -translate-x-full"
-        } xl:w-1/5 shadow-2xl pr-3 min-h-dvh absolute top-0 bg-white
+          isOpen === null
+            ? " -translate-x-full"
+            : isOpen
+            ? "animate-appear"
+            : "animate-disappear -translate-x-full"
+        } xl:w-1/5 shadow-2xl pr-3 min-h-dvh absolute top-0 bg-white dark:bg-slate-800 
         `}
       >
-        <p className="text-[#363636] font-bold text-2xl p-5 mt-5 ">Library</p>
+        <p className="text-[#363636] dark:text-gray-100 font-bold text-2xl p-5 mt-5 ">
+          Library
+        </p>
         {data.map((d) => (
           <div
             key={d.name}
-            className={`flex items-center space-x-5 hover:bg-[#eccce0] p-5 text-[#646464] hover:text-[#646464] cursor-pointer ${
+            className={`flex items-center space-x-5 hover:bg-[#eccce0] p-5 text-[#646464] hover:text-[#646464] dark:text-gray-100 hover:dark:text-slate-600 cursor-pointer ${
               activeItem.name === d.name ? "bg-[#8a89c5] text-white " : ""
             } transition-all  `}
             onClick={() => handleItemClick(d)}

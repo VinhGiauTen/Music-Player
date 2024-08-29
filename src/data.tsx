@@ -65,3 +65,11 @@ export const data = [
   },
   //ADD MORE HERE
 ];
+
+type IconName = "moon" | "sunny" | "desktop";
+
+export const options = [
+  { icon: "sunny" as IconName, text: "light" },
+  { icon: "moon" as IconName, text: "dark" },
+  { icon: "desktop-outline" as IconName, text: "system" },
+];
