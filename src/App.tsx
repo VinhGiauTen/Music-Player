@@ -373,6 +373,7 @@ export default function App() {
               src={activeItem.audio}
               ref={audioRef}
               onEnded={EndedAudio}
+              hidden
               controls
             />
             <p>{formatDuration(duration)}</p>
@@ -471,12 +472,16 @@ export default function App() {
         {data.map((d) => (
           <div
             key={d.name}
-            className={`flex items-center space-x-5 hover:bg-[#eccce0] p-5 text-[#646464] hover:text-[#646464] dark:text-gray-100 hover:dark:text-slate-600 cursor-pointer ${
+            className={`flex items-center space-x-5 hover:bg-[#eccce0] p-5 text-[#646464] hover:text-[#646464] dark:text-gray-100 hover:dark:text-slate-600 cursor-pointer transition-all duration-300 ${
               activeItem.name === d.name ? "bg-[#8a89c5] text-white " : ""
             } transition-all  `}
             onClick={() => handleItemClick(d)}
           >
-            <img src={d.cover} alt="cover" className="w-1/2 xl:w-1/4" />
+            <img
+              src={d.cover}
+              alt="cover"
+              className="w-1/2 xl:w-1/4 rounded-lg"
+            />
             <div className="">
               <p>{d.name}</p>
               <p className="text-xs">{d.artist}</p>
