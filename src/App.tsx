@@ -369,7 +369,12 @@ export default function App() {
                 handleChange={handleSeek}
               />
             </div>
-            <audio src={activeItem.audio} ref={audioRef} onEnded={EndedAudio} />
+            <audio
+              src={activeItem.audio}
+              ref={audioRef}
+              onEnded={EndedAudio}
+              controls
+            />
             <p>{formatDuration(duration)}</p>
           </div>
           <div className="flex justify-around cursor-pointer transition p-3 md:w-1/2 ">
