@@ -7,6 +7,9 @@
   width: 100%;
   height: 1rem;
   background-color: #9c9c9c80;
+  border-radius: 0.5rem; /* Tạo bo tròn cho thanh trượt */
+  overflow: hidden; /* Đảm bảo không có khoảng trắng thừa */
+  position: relative; /* Cần thiết cho phần thanh trượt gradient bên trên */
 }
 
 .range-slider::-webkit-slider-thumb {
@@ -14,6 +17,19 @@
   width: 2rem;
   height: 1rem;
   cursor: pointer;
+  background-color: transparent; /* Làm nền trong suốt để chỉ thấy phần trên */
+  position: relative;
+  z-index: 2; /* Đảm bảo thanh trượt nằm trên gradient */
+}
+
+/* Đảm bảo rằng không có khoảng trống nào bên dưới thanh trượt */
+.range-slider-container {
+  position: relative;
+  width: 100%;
+  height: 1rem;
+  background-color: #9c9c9c80;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 .animation-spin-slow {

@@ -207,7 +207,7 @@ export default function App() {
 
   return (
     <div
-      className={`xl:flex items-start overflow-hidden h-lvh ${
+      className={`xl:flex items-start overflow-hidden h-lvh max-h-screen ${
         isOpen ? "" : ""
       }`}
     >
