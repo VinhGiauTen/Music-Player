@@ -23,7 +23,7 @@ export const data = [
       "https://cms.chillhop.com/media/2284/squarele1e03c73e037bfff564859d1296790454041ac3a.jpg",
     artist: "Swørn",
     audio: "https://mp3.chillhop.com/serve.php/?mp3=9222",
-    color: ["#CD607D", "#c94043"],
+    color: ["#10b981", "#84cc16"],
     id: "uuidv4()",
   },
   {
@@ -32,7 +32,7 @@ export const data = [
       "https://cms.chillhop.com/media/5884/squarel6acdccd13d84220cc009a3f5073a1a41550c17cb.jpg",
     artist: "Aiguille",
     audio: "https://mp3.chillhop.com/serve.php/?mp3=9148",
-    color: ["#EF8EA9", "#ab417f"],
+    color: ["#be123c", "#a21caf"],
     id: "uuidv4()",
   },
   {
@@ -50,7 +50,7 @@ export const data = [
       "https://cms.chillhop.com/media/26/squareld66fa0e72de4a66f5072c4a3216d009ca909a874.jpg",
     artist: "Aso, Middle School, Aviino",
     audio: "https://mp3.chillhop.com/serve.php/?mp3=10074",
-    color: ["#205950", "#2ab3bf"],
+    color: ["#6366f1", "#0ea5e9"],
     id: "uuidv4()",
   },
   {
@@ -60,7 +60,7 @@ export const data = [
     artist: "Dark Soul",
     audio:
       "https://vgmsite.com/soundtracks/dark-souls-iii-the-ringed-city-extended-soundtrack/qyofrigv/04%20-%20Slave%20Knight%20Gael%20%28Extended%29.mp3",
-    color: ["#205950", "#2ab3bf"],
+    color: ["#f59e0b", "#ef4444"],
     id: "uuidv4()",
   },
   //ADD MORE HERE

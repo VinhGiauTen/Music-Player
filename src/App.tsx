@@ -465,6 +465,9 @@ export default function App() {
             : "animate-disappear -translate-x-full"
         } xl:w-1/5 shadow-2xl pr-3 min-h-dvh absolute top-0 bg-white dark:bg-slate-800 overflow-hidden z-10
         `}
+        // style={{
+        //   background: `linear-gradient(to right, ${activeItem.color[0]}, ${activeItem.color[1]})`,
+        // }}
       >
         <p className="text-[#363636] dark:text-gray-100 font-bold text-2xl p-5 mt-5 ">
           Library
